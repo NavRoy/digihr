@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+
+  # ── PostgreSQL ─────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: digihr_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       digihr
+      POSTGRES_USER:     digihr_user
+      POSTGRES_PASSWORD: digihr_pass_2025
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U digihr_user -d digihr"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── Node.js Backend ────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: digihr_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV:        production
+      PORT:            5000
+      DB_HOST:         db
+      DB_PORT:         5432
+      DB_NAME:         digihr
+      DB_USER:         digihr_user
+      DB_PASSWORD:     digihr_pass_2025
+      JWT_SECRET:      change_this_super_secret_jwt_key_in_production_2025
+      JWT_REFRESH_SECRET: change_this_refresh_secret_key_in_production_2025
+      JWT_EXPIRES_IN:  8h
+      CORS_ORIGIN:     http://localhost:3000
+      # Optional email
+      SMTP_HOST:       ""
+      SMTP_PORT:       "587"
+      SMTP_USER:       ""
+      SMTP_PASS:       ""
+    ports:
+      - "5000:5000"
+    volumes:
+      - uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── React Frontend (dev mode) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: digihr_frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      VITE_API_URL: http://localhost:5000
+    ports:
+      - "3000:3000"
+
+  # ── Nginx reverse proxy (production) ──────────────────────────────────────
+  nginx:
+    image: nginx:alpine
+    container_name: digihr_nginx
+    restart: unless-stopped
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - uploads:/app/uploads:ro
+    profiles:
+      - prod   # only starts with: docker compose --profile prod up
+
+volumes:
+  pgdata:
+  uploads:

@@ -1,0 +1,101 @@
+/* PAGE BACKGROUND */
+
+.dashboard-page{
+background:#f8fafc;
+min-height:100vh;
+}
+
+/* HERO CLOCK */
+
+.dashboard-hero{
+background: linear-gradient(135deg,#0f172a,#1e293b);
+border-radius:16px;
+padding:20px 28px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+box-shadow:0 20px 45px rgba(0,0,0,0.25);
+border:1px solid rgba(255,255,255,0.05);
+}
+
+/* STAT CARD IMPROVEMENT */
+
+.stat-card{
+background:white;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.07);
+transition:all .3s ease;
+border:1px solid #f1f5f9;
+}
+
+.stat-card:hover{
+transform:translateY(-4px);
+box-shadow:0 20px 40px rgba(0,0,0,0.12);
+}
+
+/* DASHBOARD CARDS */
+
+.dashboard-card{
+background:white;
+border-radius:16px;
+box-shadow:0 12px 30px rgba(0,0,0,0.08);
+border:1px solid #f1f5f9;
+transition:.25s;
+}
+
+.dashboard-card:hover{
+transform:translateY(-3px);
+box-shadow:0 20px 45px rgba(0,0,0,0.15);
+}
+
+/* ATTENDANCE BOX */
+
+.attendance-box{
+border-radius:10px;
+padding:12px;
+text-align:center;
+font-weight:600;
+transition:.25s;
+}
+
+.attendance-box:hover{
+transform:scale(1.05);
+}
+
+/* MINI BAR */
+
+.mini-bar{
+height:8px;
+border-radius:5px;
+overflow:hidden;
+}
+
+/* ACTIVITY FEED */
+
+.activity-item{
+padding-bottom:14px;
+margin-bottom:14px;
+border-bottom:1px solid #f1f5f9;
+display:flex;
+gap:12px;
+}
+
+/* QUICK LINKS */
+
+.quick-link{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:6px;
+padding:12px 8px;
+border-radius:10px;
+background:#f8fafc;
+cursor:pointer;
+border:1px solid #e5e7eb;
+transition:.2s;
+}
+
+.quick-link:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
+}
